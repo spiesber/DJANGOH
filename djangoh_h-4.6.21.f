@@ -31,7 +31,7 @@ C                               FRG
 C
 C     with extensions by T. Martini (for hadron polarization, 2012+13)
 C
-C     VERSION 4.6.20,  Dec 05 2022
+C     VERSION 4.6.21,  Dec 05 2022
 C
 C***********************************************************************
 C
@@ -288,7 +288,7 @@ C---PRINT THE TITLE
      3//,10X,'                         HERACLES '
      4//,10X,'     Event generator for deep-inelastic e-P collisions '
      5 /,10X,'              including radiative corrections  '
-     6//,10X,'                 VERSION 4.6.20, 05.12.2022 '//
+     6//,10X,'                 VERSION 4.6.21, 05.12.2022 '//
      8//,10X,'                      H. Spiesberger '//
      9' **************************************************',
      1'****************************',//)
