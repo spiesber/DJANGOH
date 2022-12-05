@@ -1,4 +1,4 @@
-# DJANGOH - version 4.6.20 (21.11.2021)
+# DJANGOH - version 4.6.21 (05.05.2022)
 Monte Carlo simulation for deep inelastic lepton nucleon scattering
 
 DJANGOH performs event simulation of neutral and charged current 
