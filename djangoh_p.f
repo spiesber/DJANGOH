@@ -79,7 +79,7 @@ C...
 chs     3          ARRF(NX+NQ) 
       DOUBLE PRECISION X, Q2
       DOUBLE PRECISION DUV, DDV, DUBAR, DDBAR, DSTR, DGLU
-      DOUBLE PRECISION DFINT
+      DOUBLE PRECISION DFINT1410
 C...      
       COMMON/ DSSVGRID / XUF, XDF, XUBF, XDBF, XSF, XGF, NA, ARRF
 C
@@ -129,12 +129,12 @@ C...  INTERPOLATION AND OUTPUT:
 C
       XT(1) = DLOG(X)
       XT(2) = DLOG(Q2)
-      DUV   = DFINT(NARG,XT,NA,ARRF,XUF)  * (1.D0-X)**3 * X
-      DDV   = DFINT(NARG,XT,NA,ARRF,XDF)  * (1.D0-X)**4 * X
-      DUBAR = DFINT(NARG,XT,NA,ARRF,XUBF) * (1.D0-X)**8 * X**0.5
-      DDBAR = DFINT(NARG,XT,NA,ARRF,XDBF) * (1.D0-X)**8 * X**0.5
-      DSTR  = DFINT(NARG,XT,NA,ARRF,XSF)  * (1.D0-X)**8 * X**0.5
-      DGLU  = DFINT(NARG,XT,NA,ARRF,XGF)  * (1.D0-X)**5 * X**0.5
+      DUV   = DFINT1410(NARG,XT,NA,ARRF,XUF)  * (1.D0-X)**3 * X
+      DDV   = DFINT1410(NARG,XT,NA,ARRF,XDF)  * (1.D0-X)**4 * X
+      DUBAR = DFINT1410(NARG,XT,NA,ARRF,XUBF) * (1.D0-X)**8 * X**0.5
+      DDBAR = DFINT1410(NARG,XT,NA,ARRF,XDBF) * (1.D0-X)**8 * X**0.5
+      DSTR  = DFINT1410(NARG,XT,NA,ARRF,XSF)  * (1.D0-X)**8 * X**0.5
+      DGLU  = DFINT1410(NARG,XT,NA,ARRF,XGF)  * (1.D0-X)**5 * X**0.5
 C...
 chs 60   RETURN
       return
@@ -224,12 +224,14 @@ C...
       RETURN
       END
 *
-*...CERN LIBRARY ROUTINE E104 (INTERPOLATION) :
+*...  CERN LIBRARY ROUTINE E104 (INTERPOLATION) :
+chs   Version for DSSVFIT
 *
-      FUNCTION DFINT(NARG,ARG,NENT,ENT,TABLE)
+      FUNCTION DFINT1410(NARG,ARG,NENT,ENT,TABLE)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION ARG(2),NENT(2),ENT(100),TABLE(1200)
+c24      DIMENSION ARG(2),NENT(2),ENT(100),TABLE(1200)
 chs      DIMENSION ARG(5),NENT(5),ENT(73),TABLE(1200)
+      DIMENSION ARG(2),NENT(2),ENT(100),TABLE(1410)
       DIMENSION D(5),NCOMB(5),IENT(5)
       KD=1
       M=1
@@ -250,7 +252,7 @@ chs      DIMENSION ARG(5),NENT(5),ENT(73),TABLE(1200)
          M=M*NENT(I)
          JA=JB+1
  5    CONTINUE
-      DFINT=0.D0
+      DFINT1410=0.D0
  10   FAC=1.D0
       IADR=KD
       IFADR=1
@@ -261,8 +263,8 @@ chs      DIMENSION ARG(5),NENT(5),ENT(73),TABLE(1200)
  12      FAC=FAC*D(I)
          IADR=IADR-IFADR
          IFADR=IFADR*NENT(I)
- 15   CONTINUE
-      DFINT=DFINT+FAC*TABLE(IADR)
+ 15   CONTINUE      
+      DFINT1410=DFINT1410+FAC*TABLE(IADR)
       IL=NARG
  40   IF (NCOMB(IL).EQ.0) GO TO 80
       NCOMB(IL)=0
@@ -1142,7 +1144,8 @@ C...Added for interface to DJANGOH (TM&HS, 10.01.2013)
       X=Xin
       Q2=Q2in
       XMIND=1.0D-4
-      XMAXD=1.0D0
+c      XMAXD=1.0D0
+      XMAXD=0.9999D0
       Q2MIND=0.8D0
       Q2MAXD=1.D6
       if (Xin.lt.XMIND) then 
@@ -1160,6 +1163,7 @@ C...Added for interface to DJANGOH (TM&HS, 10.01.2013)
       if (Q2in.gt.Q2MAXD) then
         Q2=Q2MAXD
         iqoutmx=iqoutmx+1
+        stop
       endif
 *...INITIALIZATION :
 *    SELECTION AND READING OF THE GRID :
@@ -1249,15 +1253,71 @@ C
 *...INTERPOLATION :
       XT(1) = DLOG(X)
       XT(2) = DLOG(Q2)
-      U = DFINT(NARG,XT,NA,ARRF,XUF) * (1.D0-X)**3 * X
-      D = DFINT(NARG,XT,NA,ARRF,XDF) * (1.D0-X)**4 * X
-      UB = DFINT(NARG,XT,NA,ARRF,XUBF) * (1.D0-X)**8 * X**0.5
-      DB = DFINT(NARG,XT,NA,ARRF,XDBF) * (1.D0-X)**8 * X**0.5
-      ST = DFINT(NARG,XT,NA,ARRF,XSF)  * (1.D0-X)**8 * X**0.5
-      GL = DFINT(NARG,XT,NA,ARRF,XGF)  * (1.D0-X)**5 * X**0.5
-      G1P = DFINT(NARG,XT,NA,ARRF,XG1P)  * (1.D0-X)**3
-      G1N = DFINT(NARG,XT,NA,ARRF,XG1N)  * (1.D0-X)**3
+      U = DFINT1260(NARG,XT,NA,ARRF,XUF) * (1.D0-X)**3 * X
+      D = DFINT1260(NARG,XT,NA,ARRF,XDF) * (1.D0-X)**4 * X
+      UB = DFINT1260(NARG,XT,NA,ARRF,XUBF) * (1.D0-X)**8 * X**0.5
+      DB = DFINT1260(NARG,XT,NA,ARRF,XDBF) * (1.D0-X)**8 * X**0.5
+      ST = DFINT1260(NARG,XT,NA,ARRF,XSF)  * (1.D0-X)**8 * X**0.5
+      GL = DFINT1260(NARG,XT,NA,ARRF,XGF)  * (1.D0-X)**5 * X**0.5
+      G1P = DFINT1260(NARG,XT,NA,ARRF,XG1P)  * (1.D0-X)**3
+      G1N = DFINT1260(NARG,XT,NA,ARRF,XG1N)  * (1.D0-X)**3
  60   RETURN
+      END
+
+*
+*...  CERN LIBRARY ROUTINE E104 (INTERPOLATION) :
+chs   Version for PARPOL (GRSV)
+*
+      FUNCTION DFINT1260(NARG,ARG,NENT,ENT,TABLE)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+c24      DIMENSION ARG(2),NENT(2),ENT(100),TABLE(1200)
+chs      DIMENSION ARG(5),NENT(5),ENT(73),TABLE(1200)
+      DIMENSION ARG(2),NENT(2),ENT(100),TABLE(1260)
+      DIMENSION D(5),NCOMB(5),IENT(5)
+      KD=1
+      M=1
+      JA=1
+      DO 5 I=1,NARG
+         NCOMB(I)=1
+         JB=JA-1+NENT(I)
+         DO 2 J=JA,JB
+            IF (ARG(I).LE.ENT(J)) GO TO 3
+ 2       CONTINUE
+         J=JB
+ 3       IF (J.NE.JA) GO TO 4
+         J=J+1
+ 4       JR=J-1
+         D(I)=(ENT(J)-ARG(I))/(ENT(J)-ENT(JR))
+         IENT(I)=J-JA
+         KD=KD+IENT(I)*M
+         M=M*NENT(I)
+         JA=JB+1
+ 5    CONTINUE
+      DFINT1260=0.D0
+ 10   FAC=1.D0
+      IADR=KD
+      IFADR=1
+      DO 15 I=1,NARG
+         IF (NCOMB(I).EQ.0) GO TO 12
+         FAC=FAC*(1.D0-D(I))
+         GO TO 15
+ 12      FAC=FAC*D(I)
+         IADR=IADR-IFADR
+         IFADR=IFADR*NENT(I)
+ 15   CONTINUE
+      DFINT1260=DFINT1260+FAC*TABLE(IADR)
+      IL=NARG
+ 40   IF (NCOMB(IL).EQ.0) GO TO 80
+      NCOMB(IL)=0
+      IF (IL.EQ.NARG) GO TO 10
+      IL=IL+1
+      DO 50  K=IL,NARG
+         NCOMB(K)=1
+ 50   CONTINUE
+      GO TO 10
+ 80   IL=IL-1
+      IF(IL.NE.0) GO TO 40
+      RETURN
       END
 
 
@@ -1494,17 +1554,75 @@ chs 2001   FORMAT (2e9.3,13(1pe12.4))
 *...INTERPOLATION :
       XT(1) = DLOG(X)
       XT(2) = DLOG(Q2)
-      UUB = DFINT(NARG,XT,NA,ARRF,XUUBF)  * (1.D0-X)**3 * X**0.5
-      DDB = DFINT(NARG,XT,NA,ARRF,XDDBF)  * (1.D0-X)**3 * X**0.5
-      U  = DFINT(NARG,XT,NA,ARRF,XUF)   * (1.D0-X)**3 * X**0.5
-      D  = DFINT(NARG,XT,NA,ARRF,XDF)   * (1.D0-X)**3 * X**0.5
-      UB  = DFINT(NARG,XT,NA,ARRF,XUBF)   * (1.D0-X)**7 * X**0.5
-      DB  = DFINT(NARG,XT,NA,ARRF,XDBF)   * (1.D0-X)**7 * X**0.5
-      ST  = DFINT(NARG,XT,NA,ARRF,XSF)    * (1.D0-X)**7 * X**0.5
-      GL = DFINT(NARG,XT,NA,ARRF,XGF)    * (1.D0-X)**6 * X**3.
+      UUB = DFINT1344(NARG,XT,NA,ARRF,XUUBF)  * (1.D0-X)**3 * X**0.5
+      DDB = DFINT1344(NARG,XT,NA,ARRF,XDDBF)  * (1.D0-X)**3 * X**0.5
+      U  = DFINT1344(NARG,XT,NA,ARRF,XUF)   * (1.D0-X)**3 * X**0.5
+      D  = DFINT1344(NARG,XT,NA,ARRF,XDF)   * (1.D0-X)**3 * X**0.5
+      UB  = DFINT1344(NARG,XT,NA,ARRF,XUBF)   * (1.D0-X)**7 * X**0.5
+      DB  = DFINT1344(NARG,XT,NA,ARRF,XDBF)   * (1.D0-X)**7 * X**0.5
+      ST  = DFINT1344(NARG,XT,NA,ARRF,XSF)    * (1.D0-X)**7 * X**0.5
+      GL = DFINT1344(NARG,XT,NA,ARRF,XGF)    * (1.D0-X)**6 * X**3.
 
  60   RETURN
       END
+
+
+*
+*...  CERN LIBRARY ROUTINE E104 (INTERPOLATION) :
+chs   Version for LSS2010
+*
+      FUNCTION DFINT1344(NARG,ARG,NENT,ENT,TABLE)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+c24      DIMENSION ARG(2),NENT(2),ENT(100),TABLE(1200)
+chs      DIMENSION ARG(5),NENT(5),ENT(73),TABLE(1200)
+      DIMENSION ARG(2),NENT(2),ENT(100),TABLE(1344)
+      DIMENSION D(5),NCOMB(5),IENT(5)
+      KD=1
+      M=1
+      JA=1
+      DO 5 I=1,NARG
+         NCOMB(I)=1
+         JB=JA-1+NENT(I)
+         DO 2 J=JA,JB
+            IF (ARG(I).LE.ENT(J)) GO TO 3
+ 2       CONTINUE
+         J=JB
+ 3       IF (J.NE.JA) GO TO 4
+         J=J+1
+ 4       JR=J-1
+         D(I)=(ENT(J)-ARG(I))/(ENT(J)-ENT(JR))
+         IENT(I)=J-JA
+         KD=KD+IENT(I)*M
+         M=M*NENT(I)
+         JA=JB+1
+ 5    CONTINUE
+      DFINT1344=0.D0
+ 10   FAC=1.D0
+      IADR=KD
+      IFADR=1
+      DO 15 I=1,NARG
+         IF (NCOMB(I).EQ.0) GO TO 12
+         FAC=FAC*(1.D0-D(I))
+         GO TO 15
+ 12      FAC=FAC*D(I)
+         IADR=IADR-IFADR
+         IFADR=IFADR*NENT(I)
+ 15   CONTINUE
+      DFINT1344=DFINT1344+FAC*TABLE(IADR)
+      IL=NARG
+ 40   IF (NCOMB(IL).EQ.0) GO TO 80
+      NCOMB(IL)=0
+      IF (IL.EQ.NARG) GO TO 10
+      IL=IL+1
+      DO 50  K=IL,NARG
+         NCOMB(K)=1
+ 50   CONTINUE
+      GO TO 10
+ 80   IL=IL-1
+      IF(IL.NE.0) GO TO 40
+      RETURN
+      END
+
 
 
 C=============================================================================
@@ -1667,7 +1785,8 @@ C         write (6,*) q2
         iqoutmx=iqoutmx+1
 C         write (6,*) '*** Q^2-value out of range ***'
 C         write (6,*) '*** Q^2 set to maximal value ***'
-        q2=q2fin
+Chs reduce upper limit to avoid that index jram runs out of range 
+        q2=q2fin-1d0
 C         write (6,*) q2
       endif
       if (x.lt.XMIND) then
@@ -1692,7 +1811,7 @@ C         write (6,*) x
       ram=dlog(q2/q2sta)*nq2inv/dlog(q2fin/q2sta)+1.d0
       jram=int(ram)
       fracj=ram-dble(jram)
-      
+
       if (iflag.eq.0) then
          do 100 i=1,5
             aux(i)=(arraya(iram,jram,i)*(1.d0-fraci)

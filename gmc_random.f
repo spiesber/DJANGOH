@@ -81,11 +81,13 @@
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
        integer function irndm (dummy)
        implicit none
-       real dummy, r
-       integer i
-       equivalence (r,i)
+!       real dummy, r
+       real dummy,r(1)
+!       integer i
+!       equivalence (r,i)
        call ranlux(r,1)
-       irndm = i
+!       irndm = i
+       irndm = r(1)
        return
        end
 
@@ -118,10 +120,12 @@
 
        real function ranf (dummy)
        implicit none
-       real dummy, r
+!       real dummy, r
+       real dummy, r(1)
        external ranlux
        call ranlux(r,1)    
-       ranf = r
+!       ranf = r
+       ranf = r(1)
        return
        end
 
@@ -131,10 +135,12 @@
        real function rlu(idummy)
        implicit none
        integer idummy
-       real r
+!       real r
+       real r(1)
        external ranlux
        call ranlux(r,1)
-       rlu = r
+!       rlu = r
+       rlu = r(1)
        return
        end
 
@@ -156,9 +162,11 @@
       double precision function pyr(idummy)
       implicit none
       integer idummy
-      real r
+!      real r
+      real r(1)
       call ranlux(r,1)
-      pyr = r
+!      pyr = r
+      pyr = r(1)
       return
       end
       
